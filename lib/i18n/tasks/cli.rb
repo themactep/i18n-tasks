@@ -90,6 +90,8 @@ class I18n::Tasks::CLI
         op.on(*optparse_args(flag)) { |v| options[option_name(flag)] = v }
       end
       verbose_option op
+      color_option op
+      quiet_option op
       help_option op
     end.parse!(argv)
     options
@@ -102,6 +104,8 @@ class I18n::Tasks::CLI
         puts I18n::Tasks::VERSION
         exit
       end
+      color_option op
+      quiet_option op
       help_option op
       commands_summary op
     end.parse!(argv)
@@ -126,6 +130,18 @@ class I18n::Tasks::CLI
   def verbose_option(op)
     op.on('--verbose', 'Verbose output') do
       ::I18n::Tasks.verbose = true
+    end
+  end
+
+  def color_option(op)
+    op.on('--color', 'Enable colorized output') do
+      ENV['I18N_TASKS_COLOR'] = 'true'
+    end
+  end
+
+  def quiet_option(op)
+    op.on('--quiet', 'Suppress non-essential messages') do
+      ::I18n::Tasks.quiet = true
     end
   end
 
@@ -203,7 +219,7 @@ class I18n::Tasks::CLI
     end
   end
 
-  def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] || $stdout.isatty)
+  def auto_output_coloring(coloring = ENV['I18N_TASKS_COLOR'] == 'true')
     coloring_was    = Rainbow.enabled
     Rainbow.enabled = coloring
     yield

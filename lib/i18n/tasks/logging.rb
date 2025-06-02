@@ -23,6 +23,7 @@ module I18n::Tasks::Logging
   end
 
   def log_stderr(*args)
+    return if ::I18n::Tasks.quiet?
     # We don't want output from different threads to get intermixed.
     MUTEX.synchronize do
       $stderr.puts(*args)

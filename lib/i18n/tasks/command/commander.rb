@@ -16,7 +16,9 @@ module I18n::Tasks
       end
 
       def run(name, opts = {})
-        log_stderr "#{Rainbow('#StandWith').bg(:blue)}#{Rainbow('Ukraine').bg(:yellow)}"
+        unless ::I18n::Tasks.quiet?
+          log_stderr "#{Rainbow('#StandWith').bg(:blue)}#{Rainbow('Ukraine').bg(:yellow)}"
+        end
         name = name.to_sym
         public_name = name.to_s.tr '_', '-'
         log_verbose "task: #{public_name}(#{opts.map { |k, v| "#{k}: #{v.inspect}" } * ', '})"
